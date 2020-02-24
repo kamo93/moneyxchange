@@ -1,0 +1,12 @@
+@import "src/assets/theme/palette";
+
+.Logo{
+  display: flex;
+  justify-content: center;
+}
+
+.Logo img {
+  height: 70px;
+  border-radius: 50%;
+  background-color: $white;
+}
