@@ -1,0 +1,24 @@
+.SocialNetwork {
+  display: flex;
+  flex-direction: row;
+
+  li {
+    margin: auto 20px;
+
+    &:first-child{
+      margin-left: 0;
+    }
+
+    img {
+      height: 35px;
+
+      &.twitter {
+        height: 45px;
+      }
+
+      &.linkedIn {
+        height: 50px;
+      }
+    }
+  }
+}

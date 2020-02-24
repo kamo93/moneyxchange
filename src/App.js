@@ -1,5 +1,5 @@
 import React from 'react';
-import Layout from './hoc/Layout';
+import Layout from './hoc/Layout/Layout';
 import Home from './page/Home/Home';
 
 function App() {
