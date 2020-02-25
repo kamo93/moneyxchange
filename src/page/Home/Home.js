@@ -1,5 +1,6 @@
 import React from 'react';
+import Currencies from '../../containers/Currencies/Currencies';
 
-const Home = () => <div>Home Page</div>;
+const Home = () => <Currencies />;
 
 export default Home;

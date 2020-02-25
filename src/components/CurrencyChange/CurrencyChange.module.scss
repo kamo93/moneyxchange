@@ -1,0 +1,16 @@
+.CurrencyChange {
+  text-align: center;
+
+  .joinInputs {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .btnCalculate {
+    padding-top: 55px;
+    button {
+      padding: 10px 100px;
+    }
+  }
+}

@@ -1,0 +1,6 @@
+.SectionContainer {
+  border-bottom: 3px solid;
+   &:last-child {
+     border-bottom: none;
+   }
+}
