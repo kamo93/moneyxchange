@@ -66,11 +66,7 @@ const CurrencyChange = React.memo(props => {
         <button className="btn btn-primary" disabled={!moneyToConvert} onClick={onClickHandler}>
           CALCULATE
           {props.loading && (
-            <div
-              className="spinner-border"
-              style={{ position: 'absolute', top: '5px', left: 'calc(100% - 40px)' }}
-              role="status"
-            >
+            <div className={[classes.loader, 'spinner-border'].join(' ')} role="status">
               <span className="sr-only">Loading...</span>
             </div>
           )}

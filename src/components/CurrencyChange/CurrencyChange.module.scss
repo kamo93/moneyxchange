@@ -14,4 +14,10 @@
       position: relative;
     }
   }
+
+  .loader {
+    position: absolute;
+    top: 5px;
+    left: calc(100% - 40px);
+  }
 }
