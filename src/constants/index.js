@@ -31,3 +31,9 @@ export const LABEL_RESULT = 'Result';
 export const CURRENCY_DEFAULT = {
   EUR: '€'
 };
+
+export const LINKS_SOCIAL_NETWORKS = {
+  FB: 'https://www.facebook.com/BelatrixSoftware/',
+  TW: 'https://twitter.com/BelatrixLatAm?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor',
+  LI: 'https://www.linkedin.com/company/belatrix-software/'
+};

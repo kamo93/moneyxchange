@@ -1,4 +1,5 @@
 import React from 'react';
+import { LINKS_SOCIAL_NETWORKS } from '../../../constants';
 import classes from './SocialNetworks.module.scss';
 import fbLogo from '../../../assets/img/fb-logo.png';
 import twLogo from '../../../assets/img/twitter-logo.png';
@@ -8,13 +9,19 @@ const SocialNetworks = () => {
   return (
     <ul className={classes.SocialNetwork}>
       <li>
-        <img src={fbLogo} alt="Facebook logo" />
+        <a href={LINKS_SOCIAL_NETWORKS.FB} target="_blank" rel="noopener">
+          <img src={fbLogo} alt="Facebook logo" />
+        </a>
       </li>
       <li>
-        <img className={classes.twitter} src={twLogo} alt="Twitter logo" />
+        <a href={LINKS_SOCIAL_NETWORKS.TW} target="_blank" rel="noopener">
+          <img className={classes.twitter} src={twLogo} alt="Twitter logo" />
+        </a>
       </li>
       <li>
-        <img className={classes.linkedIn} src={liLogo} alt="LinkedIn logo" />
+        <a href={LINKS_SOCIAL_NETWORKS.LI} target="_blank" rel="noopener">
+          <img className={classes.linkedIn} src={liLogo} alt="LinkedIn logo" />
+        </a>
       </li>
     </ul>
   );
