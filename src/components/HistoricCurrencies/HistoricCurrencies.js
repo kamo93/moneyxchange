@@ -4,8 +4,7 @@ import HistoricCurrency from './HistoricCurrency/HistoricCurrency';
 import { SkeletonTheme } from 'react-loading-skeleton';
 import HistoricCurrenciesSkeleton from './HistoricCurrenciesSkeleton';
 
-const HistoricCurrencies = props => {
-  console.log(props);
+const HistoricCurrencies = React.memo(props => {
   let component = <HistoricCurrenciesSkeleton />;
 
   if (!props.loading) {
@@ -22,6 +21,6 @@ const HistoricCurrencies = props => {
       </SkeletonTheme>
     </div>
   );
-};
+});
 
 export default HistoricCurrencies;

@@ -5,7 +5,7 @@ import { getMonthName, getDay } from '../../../utils';
 const HistoricCurrency = props => {
   return (
     <div className="col-sm-6 col-12">
-      <h5>{props.name}</h5>
+      <h5 className={classes.subTitle}>{props.name}</h5>
       <ul>
         {props.values.map((val, index) => (
           <li key={index}>

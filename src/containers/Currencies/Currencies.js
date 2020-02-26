@@ -3,8 +3,15 @@ import classes from './Currencies.module.scss';
 import CurrencyChange from '../../components/CurrencyChange/CurrencyChange';
 import HistoricCurrencies from '../../components/HistoricCurrencies/HistoricCurrencies';
 import axiosInstance from '../../custom-axios';
-import { formatDate } from '../../utils';
-import { NUMBER_OF_DAYS_HISTORIC, CURRENCIES_LIST, ERROR_MSG, DELAY_HISTORIC, PATH_LATEST } from '../../constants';
+import { formatDate, removeFormatCurrency, formatCompleteCurrency } from '../../utils';
+import {
+  NUMBER_OF_DAYS_HISTORIC,
+  CURRENCIES_LIST,
+  ERROR_MSG,
+  DELAY_HISTORIC,
+  PATH_LATEST,
+  DELAY_LATEST
+} from '../../constants';
 
 const lastDays = [];
 for (let i = 0; i < NUMBER_OF_DAYS_HISTORIC; i++) {
@@ -30,10 +37,11 @@ const httpStateReducer = (currentHttpReducer, action) => {
 };
 
 const Currencies = () => {
+  console.log('[currencies]');
   const [httpState, dispatchHttpState] = useReducer(httpStateReducer, httpStateInit);
   const [httpStateExchange, dispatchHttpStateExchange] = useReducer(httpStateReducer, httpStateInit);
   const [historic, setHistoric] = useState([]);
-  const [moneyChanged, setMoneyChanged] = useState('');
+  const [newCurrency, setNewCurrency] = useState({ symbol: 'USD', value: 0 });
 
   // Get Historic currencies
   useEffect(() => {
@@ -57,7 +65,9 @@ const Currencies = () => {
           for (const key of keys) {
             const values = [];
             for (let i = 0; i < responses.length; i++) {
-              values.push({ [responses[i].data.timestamp]: responses[i].data.rates[key] });
+              values.push({
+                [responses[i].data.timestamp]: formatCompleteCurrency(responses[i].data.rates[key].toString())
+              });
             }
             historicPerCurrency.push({ currency: key, values: [...values], symbol: CURRENCIES_LIST[key] });
           }
@@ -69,24 +79,49 @@ const Currencies = () => {
     }, DELAY_HISTORIC);
   }, []);
 
+  useEffect(() => {
+    console.log(['Currencies change']);
+    let updateRateTimer;
+    if (newCurrency.value !== 0) {
+      updateRateTimer = setTimeout(() => {
+        getLatestRate(newCurrency.value, newCurrency.symbol);
+      }, 60000);
+    }
+    return () => {
+      clearTimeout(updateRateTimer);
+    };
+  }, [newCurrency]);
+
   const changeMoneyHandler = (moneyToConvert, symbol) => {
     dispatchHttpStateExchange({ type: 'SEND_REQUEST' });
-    axiosInstance
-      .get(PATH_LATEST, { params: { symbols: symbol } })
-      .then(res => {
-        console.log(res.data.rates[symbol], moneyToConvert, symbol);
-        dispatchHttpStateExchange({ type: 'SUCCESS' });
-        setMoneyChanged(res.data.rates[symbol] * moneyToConvert);
-      })
-      .catch(() => {
-        dispatchHttpStateExchange({ type: 'ERROR', errorMsg: ERROR_MSG.latest });
-      });
+    getLatestRate(moneyToConvert, symbol);
+  };
+
+  const getLatestRate = (moneyToConvert, symbol) => {
+    setTimeout(() => {
+      axiosInstance
+        .get(PATH_LATEST, { params: { symbols: symbol } })
+        .then(res => {
+          dispatchHttpStateExchange({ type: 'SUCCESS' });
+          setNewCurrency({
+            value: formatCompleteCurrency((res.data.rates[symbol] * removeFormatCurrency(moneyToConvert)).toString()),
+            symbol
+          });
+        })
+        .catch(() => {
+          dispatchHttpStateExchange({ type: 'ERROR', errorMsg: ERROR_MSG.latest });
+        });
+    }, DELAY_LATEST);
   };
 
   return (
     <React.Fragment>
       <section className={classes.SectionContainer}>
-        <CurrencyChange onCalculatMoney={changeMoneyHandler} changedMoney={moneyChanged} />
+        <CurrencyChange
+          onCalculateMoney={changeMoneyHandler}
+          changedMoney={newCurrency.value}
+          loading={httpStateExchange.loading}
+        />
       </section>
       <section className={classes.SectionContainer}>
         <HistoricCurrencies historic={historic} loading={httpState.loading} />

@@ -18,10 +18,16 @@ export const ERROR_MSG = {
   latest: 'We are having problems get in the latest rate. Please try later'
 };
 
-export const DELAY_HISTORIC = 5000;
+export const DELAY_HISTORIC = 3000;
+
+export const DELAY_LATEST = 1000;
 
 export const PATH_LATEST = 'latest';
 
 export const LABEL_CONVERT = 'Money to convert';
 
 export const LABEL_RESULT = 'Result';
+
+export const CURRENCY_DEFAULT = {
+  EUR: '€'
+};
