@@ -4,7 +4,7 @@ import CurrencyChange from '../../components/CurrencyChange/CurrencyChange';
 import HistoricCurrencies from '../../components/HistoricCurrencies/HistoricCurrencies';
 import axiosInstance from '../../custom-axios';
 import { formatDate } from '../../utils';
-import { NUMBER_OF_DAYS_HISTORIC, CURRENCIES_LIST, ERROR_MSG, DELAY_HISTORIC } from '../../constants';
+import { NUMBER_OF_DAYS_HISTORIC, CURRENCIES_LIST, ERROR_MSG, DELAY_HISTORIC, PATH_LATEST } from '../../constants';
 
 const lastDays = [];
 for (let i = 0; i < NUMBER_OF_DAYS_HISTORIC; i++) {
@@ -15,11 +15,12 @@ const httpStateInit = {
   loading: false,
   error: null
 };
+
 const httpStateReducer = (currentHttpReducer, action) => {
   switch (action.type) {
     case 'SEND_REQUEST':
       return { loading: true, error: null };
-    case 'RESPONSE':
+    case 'SUCCESS':
       return { loading: false, error: null };
     case 'ERROR':
       return { loading: false, error: action.errorMsg };
@@ -30,7 +31,9 @@ const httpStateReducer = (currentHttpReducer, action) => {
 
 const Currencies = () => {
   const [httpState, dispatchHttpState] = useReducer(httpStateReducer, httpStateInit);
+  const [httpStateExchange, dispatchHttpStateExchange] = useReducer(httpStateReducer, httpStateInit);
   const [historic, setHistoric] = useState([]);
+  const [moneyChanged, setMoneyChanged] = useState('');
 
   // Get Historic currencies
   useEffect(() => {
@@ -48,7 +51,7 @@ const Currencies = () => {
     setTimeout(() => {
       Promise.all(httpHistoricCalls)
         .then(responses => {
-          dispatchHttpState({ type: 'RESPONSE' });
+          dispatchHttpState({ type: 'SUCCESS' });
           const keys = Object.keys(CURRENCIES_LIST);
           const historicPerCurrency = [];
           for (const key of keys) {
@@ -66,10 +69,24 @@ const Currencies = () => {
     }, DELAY_HISTORIC);
   }, []);
 
+  const changeMoneyHandler = (moneyToConvert, symbol) => {
+    dispatchHttpStateExchange({ type: 'SEND_REQUEST' });
+    axiosInstance
+      .get(PATH_LATEST, { params: { symbols: symbol } })
+      .then(res => {
+        console.log(res.data.rates[symbol], moneyToConvert, symbol);
+        dispatchHttpStateExchange({ type: 'SUCCESS' });
+        setMoneyChanged(res.data.rates[symbol] * moneyToConvert);
+      })
+      .catch(() => {
+        dispatchHttpStateExchange({ type: 'ERROR', errorMsg: ERROR_MSG.latest });
+      });
+  };
+
   return (
     <React.Fragment>
       <section className={classes.SectionContainer}>
-        <CurrencyChange />
+        <CurrencyChange onCalculatMoney={changeMoneyHandler} changedMoney={moneyChanged} />
       </section>
       <section className={classes.SectionContainer}>
         <HistoricCurrencies historic={historic} loading={httpState.loading} />

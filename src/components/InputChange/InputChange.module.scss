@@ -2,8 +2,14 @@
   input[type='text'] {
     height: 40px;
     width: 300px;
+    margin-top: 10px;
   }
   select{
     height: 40px;
+    margin-top: auto;
   }
+}
+
+.InputChangeSelect{
+  margin-top: auto;
 }
