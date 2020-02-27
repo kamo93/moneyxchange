@@ -22,6 +22,8 @@ export const DELAY_HISTORIC = 3000;
 
 export const DELAY_LATEST = 1000;
 
+export const TIMER_GET_LATEST_RATES = 600000;
+
 export const PATH_LATEST = 'latest';
 
 export const LABEL_CONVERT = 'Money to convert';

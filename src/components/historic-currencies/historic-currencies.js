@@ -1,13 +1,14 @@
 import React from 'react';
-import classes from './HistoricCurrencies.module.scss';
-import HistoricCurrency from './HistoricCurrency/HistoricCurrency';
+import classes from './historic-currencies.module.scss';
+import HistoricCurrency from './historic-currency/historic-currency';
 import { SkeletonTheme } from 'react-loading-skeleton';
-import HistoricCurrenciesSkeleton from './HistoricCurrenciesSkeleton';
+import HistoricCurrenciesSkeleton from './historic-currencies-skeleton';
+import PropTypes from 'prop-types';
 
 const HistoricCurrencies = React.memo(props => {
   let component = <HistoricCurrenciesSkeleton />;
 
-  if (!props.loading) {
+  if (!props.isLoading) {
     component = props.historic.map((his, index) => (
       <HistoricCurrency name={his.currency} values={his.values} symbol={his.symbol} key={index} />
     ));
@@ -22,5 +23,10 @@ const HistoricCurrencies = React.memo(props => {
     </div>
   );
 });
+
+HistoricCurrencies.propTypes = {
+  isLoading: PropTypes.bool,
+  historic: PropTypes.array
+};
 
 export default HistoricCurrencies;

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import classes from './CurrencyChange.module.scss';
-import InputChange from '../Form/InputChange/InputChange';
+import classes from './currency-change.module.scss';
+import InputChange from '../form/input-change/input-change';
 import { CURRENCIES_LIST, CURRENCY_DEFAULT, LABEL_CONVERT, LABEL_RESULT } from '../../constants';
-import Select from '../Form/Select/Select';
+import Select from '../form/select/select';
 import { removeFormatCurrency, formatCompleteCurrency } from '../../utils';
+import PropTypes from 'prop-types';
 
 const CurrencyChange = React.memo(props => {
   const [moneyToConvert, setMoneyToConvert] = useState('');
@@ -11,9 +12,14 @@ const CurrencyChange = React.memo(props => {
 
   const onChangedHandler = event => {
     const getNumber = event.target.value.split(' ')[1];
-    const cleanNumber = getNumber.split(',');
-    const numberValue = Number(cleanNumber.join()) ? event.target.value.split(' ')[1] : moneyToConvert;
-    setMoneyToConvert(numberValue);
+    let newValue;
+    if (getNumber) {
+      const cleanNumber = getNumber.split(',');
+      newValue = Number(cleanNumber.join()) ? getNumber : moneyToConvert;
+    } else {
+      newValue = getNumber;
+    }
+    setMoneyToConvert(newValue);
   };
 
   const formatThousandsHandler = event => {
@@ -39,11 +45,11 @@ const CurrencyChange = React.memo(props => {
         <div className={[classes.joinInputs, 'col-sm-6 col-12'].join(' ')}>
           <InputChange
             label={LABEL_CONVERT}
-            convert={true}
+            isReadOnly={false}
             textValue={moneyToConvert}
             changed={onChangedHandler}
             symbol={CURRENCY_DEFAULT.EUR}
-            format={formatThousandsHandler}
+            blur={formatThousandsHandler}
             focus={removeFormatThousandsHandler}
           />
           <Select list={Object.keys(CURRENCY_DEFAULT)} disabled={true} />
@@ -51,7 +57,7 @@ const CurrencyChange = React.memo(props => {
         <div className={[classes.joinInputs, 'col-sm-6 col-12'].join(' ')}>
           <InputChange
             label={LABEL_RESULT}
-            convert={false}
+            isReadOnly={true}
             textValue={props.changedMoney}
             symbol={CURRENCIES_LIST[symbolSelected]}
           />
@@ -66,11 +72,7 @@ const CurrencyChange = React.memo(props => {
         <button className="btn btn-primary" disabled={!moneyToConvert} onClick={onClickHandler}>
           CALCULATE
           {props.loading && (
-            <div
-              className="spinner-border"
-              style={{ position: 'absolute', top: '5px', left: 'calc(100% - 40px)' }}
-              role="status"
-            >
+            <div className={[classes.loader, 'spinner-border'].join(' ')} role="status">
               <span className="sr-only">Loading...</span>
             </div>
           )}
@@ -79,5 +81,11 @@ const CurrencyChange = React.memo(props => {
     </div>
   );
 });
+
+CurrencyChange.propTypes = {
+  loading: PropTypes.bool,
+  onCalculateMoney: PropTypes.func,
+  changedMoney: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+};
 
 export default CurrencyChange;

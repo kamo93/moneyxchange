@@ -1,7 +1,7 @@
-import React, { useEffect, useReducer, useState } from 'react';
-import classes from './Currencies.module.scss';
-import CurrencyChange from '../../components/CurrencyChange/CurrencyChange';
-import HistoricCurrencies from '../../components/HistoricCurrencies/HistoricCurrencies';
+import React, { useEffect, useReducer, useState, Fragment } from 'react';
+import classes from './currencies.module.scss';
+import CurrencyChange from '../../components/currency-change/currency-change';
+import HistoricCurrencies from '../../components/historic-currencies/historic-currencies';
 import axiosInstance from '../../custom-axios';
 import { formatDate, removeFormatCurrency, formatCompleteCurrency } from '../../utils';
 import {
@@ -10,7 +10,8 @@ import {
   ERROR_MSG,
   DELAY_HISTORIC,
   PATH_LATEST,
-  DELAY_LATEST
+  DELAY_LATEST,
+  TIMER_GET_LATEST_RATES
 } from '../../constants';
 
 const lastDays = [];
@@ -37,7 +38,6 @@ const httpStateReducer = (currentHttpReducer, action) => {
 };
 
 const Currencies = () => {
-  console.log('[currencies]');
   const [httpState, dispatchHttpState] = useReducer(httpStateReducer, httpStateInit);
   const [httpStateExchange, dispatchHttpStateExchange] = useReducer(httpStateReducer, httpStateInit);
   const [historic, setHistoric] = useState([]);
@@ -80,12 +80,11 @@ const Currencies = () => {
   }, []);
 
   useEffect(() => {
-    console.log(['Currencies change']);
     let updateRateTimer;
     if (newCurrency.value !== 0) {
       updateRateTimer = setTimeout(() => {
         getLatestRate(newCurrency.value, newCurrency.symbol);
-      }, 60000);
+      }, TIMER_GET_LATEST_RATES);
     }
     return () => {
       clearTimeout(updateRateTimer);
@@ -115,7 +114,7 @@ const Currencies = () => {
   };
 
   return (
-    <React.Fragment>
+    <Fragment>
       <section className={classes.SectionContainer}>
         <CurrencyChange
           onCalculateMoney={changeMoneyHandler}
@@ -124,9 +123,9 @@ const Currencies = () => {
         />
       </section>
       <section className={classes.SectionContainer}>
-        <HistoricCurrencies historic={historic} loading={httpState.loading} />
+        <HistoricCurrencies historic={historic} isLoading={httpState.loading} />
       </section>
-    </React.Fragment>
+    </Fragment>
   );
 };
 

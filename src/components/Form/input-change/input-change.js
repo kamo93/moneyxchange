@@ -1,5 +1,6 @@
 import React from 'react';
-import classes from './InputChange.module.scss';
+import classes from './input-change.module.scss';
+import PropTypes from 'prop-types';
 
 const InputChange = props => {
   return (
@@ -9,14 +10,13 @@ const InputChange = props => {
         type="text"
         pattern="[0-9.]*"
         className="form-control"
-        placeholder="$10.00"
         value={`${props.symbol} ${props.textValue}`}
-        readOnly={!props.convert}
+        readOnly={props.isReadOnly}
         onChange={event => {
           props.changed(event);
         }}
         onBlur={event => {
-          props.format(event);
+          props.blur(event);
         }}
         onFocus={event => {
           props.focus(event);
@@ -24,6 +24,16 @@ const InputChange = props => {
       />
     </div>
   );
+};
+
+InputChange.propTypes = {
+  label: PropTypes.string,
+  symbol: PropTypes.string,
+  textValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  isReadOnly: PropTypes.bool,
+  changed: PropTypes.func,
+  blur: PropTypes.func,
+  focus: PropTypes.func
 };
 
 export default InputChange;

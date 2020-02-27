@@ -1,3 +1,5 @@
+@import '../../assets/theme/palette';
+
 .CurrencyChange {
   text-align: center;
 
@@ -9,9 +11,19 @@
 
   .btnCalculate {
     padding-top: 55px;
+
     button {
       padding: 10px 100px;
       position: relative;
+      &:disabled {
+        cursor: not-allowed;
+      }
     }
+  }
+
+  .loader {
+    position: absolute;
+    top: 5px;
+    left: calc(100% - 40px);
   }
 }

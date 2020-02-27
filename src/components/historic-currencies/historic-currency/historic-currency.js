@@ -1,6 +1,7 @@
 import React from 'react';
-import classes from './HistoricCurrency.module.scss';
+import classes from './historic-currency.module.scss';
 import { getMonthName, getDay } from '../../../utils';
+import PropTypes from 'prop-types';
 
 const HistoricCurrency = props => {
   return (
@@ -20,6 +21,11 @@ const HistoricCurrency = props => {
       </ul>
     </div>
   );
+};
+
+HistoricCurrency.propTypes = {
+  name: PropTypes.string,
+  values: PropTypes.array
 };
 
 export default HistoricCurrency;

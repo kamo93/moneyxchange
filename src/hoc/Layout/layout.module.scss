@@ -3,4 +3,5 @@
 .Layout {
   margin-top: 150px;
   background-color: $color3-1;
+  min-height: calc(100vh - 390px);
 }

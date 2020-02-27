@@ -1,6 +1,7 @@
 import React from 'react';
-import SocialNetworks from './SocialNetworks/SocialNetworks';
-import classes from './Footer.module.scss';
+import SocialNetworks from './social-networks/social-networks';
+import classes from './footer.module.scss';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -15,8 +16,12 @@ const Footer = () => {
         <div className="col-md-3 col-6">
           <h5 className={classes.sectionTitle}>Explore</h5>
           <ul className={classes.section}>
-            <li>Home</li>
-            <li>About Us</li>
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/about">About Us</Link>
+            </li>
           </ul>
         </div>
         <div className="col-md-3 col-6">

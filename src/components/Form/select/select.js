@@ -1,5 +1,5 @@
 import React from 'react';
-import classes from './Select.module.scss';
+import classes from './select.module.scss';
 
 const Select = props => {
   return (
@@ -12,8 +12,8 @@ const Select = props => {
           props.onSymbolChanged(event);
         }}
       >
-        {props.list.map((currency, i) => (
-          <option key={i} value={currency}>
+        {props.list.map(currency => (
+          <option key={currency} value={currency}>
             {currency}
           </option>
         ))}
