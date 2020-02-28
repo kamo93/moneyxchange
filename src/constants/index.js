@@ -18,9 +18,9 @@ export const ERROR_MSG = {
   latest: 'We are having problems get in the latest rate. Please try later'
 };
 
-export const DELAY_HISTORIC = 3000;
+export const DELAY_HISTORIC = 0;
 
-export const DELAY_LATEST = 1000;
+export const DELAY_LATEST = 0;
 
 export const TIMER_GET_LATEST_RATES = 600000;
 

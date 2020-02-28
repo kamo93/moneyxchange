@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState, Fragment } from 'react';
+import React, { useEffect, useState, useCallback, Fragment } from 'react';
 import classes from './currencies.module.scss';
 import CurrencyChange from '../../components/currency-change/currency-change';
 import HistoricCurrencies from '../../components/historic-currencies/historic-currencies';
@@ -13,33 +13,20 @@ import {
   DELAY_LATEST,
   TIMER_GET_LATEST_RATES
 } from '../../constants';
+import useHttpState from '../../hooks/http-state';
 
 const lastDays = [];
 for (let i = 0; i < NUMBER_OF_DAYS_HISTORIC; i++) {
   lastDays.push(formatDate(new Date(new Date().setDate(new Date().getDate() - (i + 1)))));
 }
-
 const httpStateInit = {
   loading: false,
   error: null
 };
 
-const httpStateReducer = (currentHttpReducer, action) => {
-  switch (action.type) {
-    case 'SEND_REQUEST':
-      return { loading: true, error: null };
-    case 'SUCCESS':
-      return { loading: false, error: null };
-    case 'ERROR':
-      return { loading: false, error: action.errorMsg };
-    default:
-      throw new Error(`Action type not handle correctly ${action.type}`);
-  }
-};
-
 const Currencies = () => {
-  const [httpState, dispatchHttpState] = useReducer(httpStateReducer, httpStateInit);
-  const [httpStateExchange, dispatchHttpStateExchange] = useReducer(httpStateReducer, httpStateInit);
+  const [httpState, dispatchHttpState] = useHttpState(httpStateInit);
+  const [httpStateExchange, dispatchHttpStateExchange] = useHttpState(httpStateInit);
   const [historic, setHistoric] = useState([]);
   const [newCurrency, setNewCurrency] = useState({ symbol: 'USD', value: 0 });
 
@@ -77,7 +64,27 @@ const Currencies = () => {
           dispatchHttpState({ type: 'ERROR', errorMsg: ERROR_MSG.historic });
         });
     }, DELAY_HISTORIC);
-  }, []);
+  }, [dispatchHttpState]);
+
+  const getLatestRate = useCallback(
+    (moneyToConvert, symbol) => {
+      setTimeout(() => {
+        axiosInstance
+          .get(PATH_LATEST, { params: { symbols: symbol } })
+          .then(res => {
+            dispatchHttpStateExchange({ type: 'SUCCESS' });
+            setNewCurrency({
+              value: formatCompleteCurrency((res.data.rates[symbol] * removeFormatCurrency(moneyToConvert)).toString()),
+              symbol
+            });
+          })
+          .catch(() => {
+            dispatchHttpStateExchange({ type: 'ERROR', errorMsg: ERROR_MSG.latest });
+          });
+      }, DELAY_LATEST);
+    },
+    [dispatchHttpStateExchange]
+  );
 
   useEffect(() => {
     let updateRateTimer;
@@ -89,29 +96,11 @@ const Currencies = () => {
     return () => {
       clearTimeout(updateRateTimer);
     };
-  }, [newCurrency]);
+  }, [newCurrency, getLatestRate]);
 
   const changeMoneyHandler = (moneyToConvert, symbol) => {
     dispatchHttpStateExchange({ type: 'SEND_REQUEST' });
     getLatestRate(moneyToConvert, symbol);
-  };
-
-  const getLatestRate = (moneyToConvert, symbol) => {
-    setTimeout(() => {
-      axiosInstance
-        .get(PATH_LATEST, { params: { symbols: symbol } })
-        .then(res => {
-          console.log('entro 5', res);
-          dispatchHttpStateExchange({ type: 'SUCCESS' });
-          setNewCurrency({
-            value: formatCompleteCurrency((res.data.rates[symbol] * removeFormatCurrency(moneyToConvert)).toString()),
-            symbol
-          });
-        })
-        .catch(() => {
-          dispatchHttpStateExchange({ type: 'ERROR', errorMsg: ERROR_MSG.latest });
-        });
-    }, DELAY_LATEST);
   };
 
   return (
@@ -121,10 +110,11 @@ const Currencies = () => {
           onCalculateMoney={changeMoneyHandler}
           changedMoney={newCurrency.value}
           loading={httpStateExchange.loading}
+          error={httpStateExchange.error}
         />
       </section>
       <section className={classes.SectionContainer}>
-        <HistoricCurrencies historic={historic} isLoading={httpState.loading} />
+        <HistoricCurrencies historic={historic} isLoading={httpState.loading} error={httpState.error} />
       </section>
     </Fragment>
   );

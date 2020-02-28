@@ -2,7 +2,7 @@ import React from 'react';
 import classes from './input-change.module.scss';
 import PropTypes from 'prop-types';
 
-const InputChange = props => {
+const InputChange = React.memo(props => {
   return (
     <div className={[classes.InputChange, 'form-group'].join(' ')}>
       <label>{props.label}</label>
@@ -25,7 +25,7 @@ const InputChange = props => {
       />
     </div>
   );
-};
+});
 
 InputChange.propTypes = {
   label: PropTypes.string,

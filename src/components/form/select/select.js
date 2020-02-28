@@ -1,7 +1,7 @@
 import React from 'react';
 import classes from './select.module.scss';
 
-const Select = props => {
+const Select = React.memo(props => {
   return (
     <div className={[classes.Select, 'form-group'].join(' ')}>
       <select
@@ -20,6 +20,6 @@ const Select = props => {
       </select>
     </div>
   );
-};
+});
 
 export default Select;

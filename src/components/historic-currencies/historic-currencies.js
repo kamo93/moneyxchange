@@ -14,6 +14,10 @@ const HistoricCurrencies = React.memo(props => {
     ));
   }
 
+  if (props.error) {
+    component = <p className={classes.serviceError}>{props.error}</p>;
+  }
+
   return (
     <div className={classes.HistoricCurrency}>
       <h2 className={classes.SectionTitle}>HISTORIC PRICE</h2>
