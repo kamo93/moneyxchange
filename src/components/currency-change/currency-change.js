@@ -44,6 +44,7 @@ const CurrencyChange = React.memo(props => {
       <div className="row">
         <div className={[classes.joinInputs, 'col-sm-6 col-12'].join(' ')}>
           <InputChange
+            id="converter"
             label={LABEL_CONVERT}
             isReadOnly={false}
             textValue={moneyToConvert}
@@ -56,6 +57,7 @@ const CurrencyChange = React.memo(props => {
         </div>
         <div className={[classes.joinInputs, 'col-sm-6 col-12'].join(' ')}>
           <InputChange
+            id="changed-money"
             label={LABEL_RESULT}
             isReadOnly={true}
             textValue={props.changedMoney}

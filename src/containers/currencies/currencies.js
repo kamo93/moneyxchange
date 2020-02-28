@@ -101,6 +101,7 @@ const Currencies = () => {
       axiosInstance
         .get(PATH_LATEST, { params: { symbols: symbol } })
         .then(res => {
+          console.log('entro 5', res);
           dispatchHttpStateExchange({ type: 'SUCCESS' });
           setNewCurrency({
             value: formatCompleteCurrency((res.data.rates[symbol] * removeFormatCurrency(moneyToConvert)).toString()),

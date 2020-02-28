@@ -7,6 +7,7 @@ const InputChange = props => {
     <div className={[classes.InputChange, 'form-group'].join(' ')}>
       <label>{props.label}</label>
       <input
+        id={props.id}
         type="text"
         pattern="[0-9.]*"
         className="form-control"
